@@ -5,4 +5,4 @@ This is a simple repo for code written while reading
 
 Additionally, I have set up [gogradle](https://github.com/gogradle/gogradle) for building and dependency 
 management purposes. A layered Dockerfile for automatic building 
-and serving will be provided.
+and serving is also provided.
