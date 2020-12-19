@@ -1,19 +1,14 @@
-# TODO: FIX
-FROM adoptopenjdk/openjdk8:alpine
+FROM adoptopenjdk/openjdk8:alpine AS build
+RUN mkdir /project
+COPY gradlew /project/gradlew
+RUN chmod +x /project/gradlew
+COPY gradle /project/gradle
+COPY settings.gradle /project/settings.gradle
+COPY build.gradle /project/build.gradle
+RUN cd project && ./gradlew
+ADD main /project
+RUN cd project && ./gradlew goBuild
 
-RUN apt-get update \
-    && apt-get install --yes --no-install-recommends \
-        build-essential
-
-RUN wget -q https://dl.google.com/go/go1.15.6.linux-amd64.tar.gz \
-    && tar -C /usr/local -xzf go1.15.6.linux-amd64.tar.gz \
-    && rm go1.15.6.linux-amd64.tar.gz
-
-ENV PATH="/usr/local/go/bin:${PATH}"
-
-COPY main /app/src/main
-COPY gradle /app/src/gradle
-COPY build.gradle /app/src/build.gradle
-COPY gradlew /app/src/gradlew
-
-CMD ["bash"]
+FROM alpine:3.12 AS bin
+COPY --from=build /project/.gogradle/app /opt/app
+CMD /opt/app
