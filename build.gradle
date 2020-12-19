@@ -4,4 +4,9 @@ plugins {
 
 golang {
     packagePath = 'go-programming-language-book/main'
+    goVersion = '1.15.6'
+}
+
+goBuild {
+    outputLocation = './.gogradle/app'
 }
