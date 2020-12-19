@@ -2,18 +2,17 @@ package ch1
 
 import (
 	"fmt"
-	"go-programming-language-book/main/common"
 	"os"
 	"strconv"
 	"strings"
 )
 
 func Sub2() {
+	fmt.Print(" - Chapter 1.2\n\n")
 	var args = CollectAllArgs()
 	PrintSlice(args)
 	ManualSlicePrint(args)
 	StringsJoinSlicePrint(args)
-	common.PrintSeparator()
 }
 
 func CollectAllArgs() []string {

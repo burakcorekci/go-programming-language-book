@@ -1,7 +1,7 @@
 package ch1
 
-import "go-programming-language-book/main/common"
+import "fmt"
 
 func Sub3() {
-	common.PrintSeparator()
+	fmt.Print(" - Chapter 1.3\n\n")
 }
