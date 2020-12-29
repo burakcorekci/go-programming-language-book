@@ -11,4 +11,6 @@ func Main() {
 	common.PrintSubSectionSeparator()
 	Sub3()
 	common.PrintSubSectionSeparator()
+	Sub4()
+	common.PrintSubSectionSeparator()
 }
