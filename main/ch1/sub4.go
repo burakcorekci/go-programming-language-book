@@ -22,19 +22,25 @@ func lissajousWithFilename(filename string) {
 		fmt.Fprintf(os.Stderr, "lissajousWithFilename: %v\n", err)
 		return
 	}
-	lissajous(f)
+	DefaultLissajous(f)
 	f.Close()
 }
 
-func lissajous(out io.Writer) {
-	const (
-		cycles  = 5     // number of complete x oscillator revolutions
-		res     = 0.001 // angular resolution
-		size    = 100   // image canvas covers [-size..+size]
-		nframes = 64    // number of animation frames
-		delay   = 8     // delay between frames in 10ms units
-	)
+type LissajousParameters struct {
+	cycles  int
+	res     float64
+	size    int
+	nframes int
+	delay   int
+}
 
+var DefaultLissajousParameters = LissajousParameters{5, 0.001, 100, 64, 8}
+
+func DefaultLissajous(out io.Writer) {
+	Lissajous(out, DefaultLissajousParameters)
+}
+
+func Lissajous(out io.Writer, parameters LissajousParameters) {
 	var palette = []color.Color{color.White, color.Black}
 	const (
 		whiteIndex = 0 // first color in palette
@@ -42,19 +48,21 @@ func lissajous(out io.Writer) {
 	)
 
 	freq := rand.Float64() * 3.0 // relative frequency of y oscillator
-	anim := gif.GIF{LoopCount: nframes}
+	anim := gif.GIF{LoopCount: parameters.nframes}
 	phase := 0.0 // phase difference
-	for i := 0; i < nframes; i++ {
-		rect := image.Rect(0, 0, 2*size+1, 2*size+1)
+	for i := 0; i < parameters.nframes; i++ {
+		rect := image.Rect(0, 0, 2*parameters.size+1, 2*parameters.size+1)
 		img := image.NewPaletted(rect, palette)
-		for t := 0.0; t < cycles*2*math.Pi; t += res {
+		for t := 0.0; t < float64(parameters.cycles)*2*math.Pi; t += parameters.res {
 			x := math.Sin(t)
 			y := math.Sin(t*freq + phase)
-			img.SetColorIndex(size+int(x*size+0.5), size+int(y*size+0.5),
+			img.SetColorIndex(
+				parameters.size+int(x*float64(parameters.size)+0.5),
+				parameters.size+int(y*float64(parameters.size)+0.5),
 				blackIndex)
 		}
 		phase += 0.1
-		anim.Delay = append(anim.Delay, delay)
+		anim.Delay = append(anim.Delay, parameters.delay)
 		anim.Image = append(anim.Image, img)
 	}
 	gif.EncodeAll(out, &anim) // NOTE: ignoring encoding errors
